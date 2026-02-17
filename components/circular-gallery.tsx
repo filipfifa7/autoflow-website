@@ -29,7 +29,7 @@ function autoBind(instance: any) {
   });
 }
 
-function createTextTexture(gl: WebGLRenderingContext, text: string, font = "bold 30px monospace", color = "black") {
+function createTextTexture(gl: any, text: string, font = "bold 30px monospace", color = "black") {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
   if (!context) {
@@ -58,7 +58,7 @@ function createTextTexture(gl: WebGLRenderingContext, text: string, font = "bold
 }
 
 class Title {
-  gl: WebGLRenderingContext;
+  gl: any;
   plane: any;
   renderer: any;
   text: string;
@@ -74,7 +74,7 @@ class Title {
     textColor = "#545050",
     font = "30px sans-serif",
   }: {
-    gl: WebGLRenderingContext;
+    gl: any;
     plane: any;
     renderer: any;
     text: string;
@@ -131,7 +131,7 @@ class Title {
 
 class Media {
   geometry: any;
-  gl: WebGLRenderingContext;
+  gl: any;
   image: string;
   index: number;
   length: number;
@@ -152,6 +152,7 @@ class Media {
   width = 0;
   widthTotal = 0;
   x = 0;
+  padding = 2;
   isBefore = false;
   isAfter = false;
   scale = 1;
@@ -173,7 +174,7 @@ class Media {
     font,
   }: {
     geometry: any;
-    gl: WebGLRenderingContext;
+    gl: any;
     image: string;
     index: number;
     length: number;
@@ -372,7 +373,7 @@ class App {
   scroll: { ease: number; current: number; target: number; last: number; position?: number };
   onCheckDebounce: () => void;
   renderer: any;
-  gl: WebGLRenderingContext;
+  gl: any;
   camera: any;
   scene: any;
   planeGeometry: any;
@@ -589,8 +590,7 @@ class App {
     this.boundOnTouchUp = this.onTouchUp.bind(this);
 
     window.addEventListener("resize", this.boundOnResize);
-    window.addEventListener("mousewheel", this.boundOnWheel);
-    window.addEventListener("wheel", this.boundOnWheel);
+    window.addEventListener("wheel", this.boundOnWheel as EventListener);
     window.addEventListener("mousedown", this.boundOnTouchDown as any);
     window.addEventListener("mousemove", this.boundOnTouchMove as any);
     window.addEventListener("mouseup", this.boundOnTouchUp as any);
@@ -604,8 +604,7 @@ class App {
 
     if (this.boundOnResize) window.removeEventListener("resize", this.boundOnResize);
     if (this.boundOnWheel) {
-      window.removeEventListener("mousewheel", this.boundOnWheel);
-      window.removeEventListener("wheel", this.boundOnWheel);
+      window.removeEventListener("wheel", this.boundOnWheel as EventListener);
     }
     if (this.boundOnTouchDown) {
       window.removeEventListener("mousedown", this.boundOnTouchDown as any);

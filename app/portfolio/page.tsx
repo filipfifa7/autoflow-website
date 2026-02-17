@@ -156,6 +156,7 @@ export default function PortfolioPage() {
             className="max-w-4xl max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element -- lightbox dynamic src */}
             <img
               src={lightboxItems[lightboxIndex].image}
               alt={lightboxItems[lightboxIndex].text}

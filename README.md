@@ -25,6 +25,16 @@ npm run dev
 
 3. Otvorite [http://localhost:3000](http://localhost:3000) u browseru.
 
+### Kontakt forma (Zoho Mail)
+
+Da bi se upiti s kontakt forme slali na **info@autoflow.hr**, postavi SMTP varijable u `.env.local` (datoteka se ne commit-a, podaci su samo na serveru):
+
+1. Kopiraj `.env.example` u `.env.local`.
+2. Popuni Zoho podatke: `SMTP_USER=info@autoflow.hr`, `SMTP_PASS=lozinka`, itd.
+
+Za Zoho custom domenu (npr. autoflow.hr) koristi:
+- **smtp.zoho.com** (port 587) ili **smtppro.zoho.com** (port 587) za paid organizaciju.
+
 ## 🏗️ Struktura projekta
 
 ```

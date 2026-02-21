@@ -42,19 +42,37 @@ function KontaktForm() {
     setError(null);
     setSubmitting(true);
 
+    const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID;
+
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Došlo je do greške pri slanju.");
+      if (formspreeId) {
+        // Static host (e.g. Cloudflare Pages): use Formspree
+        const fd = new FormData();
+        fd.append("name", formData.name);
+        fd.append("email", formData.email);
+        fd.append("phone", formData.phone || "");
+        fd.append("service", formData.service || "");
+        fd.append("message", formData.message);
+        const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
+          method: "POST",
+          body: fd,
+          headers: { Accept: "application/json" },
+        });
+        const result = await response.json();
+        if (!response.ok || result.error) {
+          throw new Error(result.error || "Došlo je do greške pri slanju.");
+        }
+      } else {
+        // Server (Vercel, Node): use our API
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+        const result = await response.json();
+        if (!response.ok || !result.ok) {
+          throw new Error(result.error || "Došlo je do greške pri slanju.");
+        }
       }
 
       setSubmitted(true);

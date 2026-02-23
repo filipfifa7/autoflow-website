@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Camera, Mesh, Plane, Program, Renderer, Texture, Transform } from "ogl";
 
-type CircularGalleryItem = {
-  image: string;
+export type CircularGalleryItem = {
+  image?: string;
+  video?: string;
   text: string;
 };
 
@@ -133,6 +134,8 @@ class Media {
   geometry: any;
   gl: any;
   image: string;
+  videoUrl?: string;
+  videoElement?: HTMLVideoElement;
   index: number;
   length: number;
   renderer: any;
@@ -161,6 +164,7 @@ class Media {
     geometry,
     gl,
     image,
+    video,
     index,
     length,
     renderer,
@@ -176,6 +180,7 @@ class Media {
     geometry: any;
     gl: any;
     image: string;
+    video?: string;
     index: number;
     length: number;
     renderer: any;
@@ -191,6 +196,7 @@ class Media {
     this.geometry = geometry;
     this.gl = gl;
     this.image = image;
+    this.videoUrl = video;
     this.index = index;
     this.length = length;
     this.renderer = renderer;
@@ -210,7 +216,7 @@ class Media {
 
   createShader() {
     const texture = new Texture(this.gl, {
-      generateMipmaps: true,
+      generateMipmaps: !this.videoUrl,
     });
     this.program = new Program(this.gl, {
       depthTest: false,
@@ -273,13 +279,41 @@ class Media {
       },
       transparent: true,
     });
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = this.image;
-    img.onload = () => {
-      texture.image = img;
-      this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
-    };
+    if (this.videoUrl) {
+      const video = document.createElement("video");
+      video.crossOrigin = "anonymous";
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.setAttribute("playsinline", "");
+      video.src = this.videoUrl;
+      this.videoElement = video;
+      video.onloadeddata = () => {
+        texture.image = video;
+        texture.needsUpdate = true;
+        this.program.uniforms.uImageSizes.value = [video.videoWidth, video.videoHeight];
+        video.play().catch(() => {});
+      };
+      video.onerror = () => {
+        if (this.image) {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = this.image;
+          img.onload = () => {
+            texture.image = img;
+            this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+          };
+        }
+      };
+    } else {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = this.image;
+      img.onload = () => {
+        texture.image = img;
+        this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+      };
+    }
   }
 
   createMesh() {
@@ -328,6 +362,11 @@ class Media {
     this.speed = scroll.current - scroll.last;
     this.program.uniforms.uTime.value += 0.04;
     this.program.uniforms.uSpeed.value = this.speed;
+    if (this.videoElement && this.videoElement.readyState >= 2) {
+      const tex = this.program.uniforms.tMap.value;
+      tex.needsUpdate = true;
+      tex.update(0);
+    }
 
     const planeOffset = this.plane.scale.x / 2;
     const viewportOffset = this.viewport.width / 2;
@@ -377,7 +416,7 @@ class App {
   camera: any;
   scene: any;
   planeGeometry: any;
-  mediasImages: { image: string; text: string }[] = [];
+  mediasImages: CircularGalleryItem[] = [];
   medias: Media[] = [];
   screen: any;
   viewport: any;
@@ -471,7 +510,7 @@ class App {
     borderRadius: number,
     font: string
   ) {
-    const defaultItems = [
+    const defaultItems: CircularGalleryItem[] = [
       { image: `https://picsum.photos/seed/1/800/600?grayscale`, text: "Bridge" },
       { image: `https://picsum.photos/seed/2/800/600?grayscale`, text: "Desk Setup" },
       { image: `https://picsum.photos/seed/3/800/600?grayscale`, text: "Waterfall" },
@@ -485,14 +524,15 @@ class App {
       { image: `https://picsum.photos/seed/21/800/600?grayscale`, text: "Coastline" },
       { image: `https://picsum.photos/seed/12/800/600?grayscale`, text: "Palm Trees" },
     ];
-    const galleryItems = items && items.length ? items : defaultItems;
+    const galleryItems: CircularGalleryItem[] = items && items.length ? items : defaultItems;
     this.baseItems = galleryItems;
     this.mediasImages = galleryItems.concat(galleryItems);
     this.medias = this.mediasImages.map((data, index) => {
       return new Media({
         geometry: this.planeGeometry,
         gl: this.gl,
-        image: data.image,
+        image: data.image ?? "",
+        video: data.video,
         index,
         length: this.mediasImages.length,
         renderer: this.renderer,
@@ -601,6 +641,13 @@ class App {
 
   destroy() {
     window.cancelAnimationFrame(this.raf);
+    this.medias?.forEach((m) => {
+      if (m.videoElement) {
+        m.videoElement.pause();
+        m.videoElement.removeAttribute("src");
+        m.videoElement.load();
+      }
+    });
 
     if (this.boundOnResize) window.removeEventListener("resize", this.boundOnResize);
     if (this.boundOnWheel) {

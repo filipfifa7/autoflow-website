@@ -15,17 +15,17 @@ const applications = [
     description: "Aplikacija za dobivanje popusta putem srećkastog kotača.",
     category: "Automatizacija",
     useCase: "Promocije, lojalnost kupaca i nagradne igre",
-    techStack: ["Web", "Lovable"],
+    techStack: ["Web"],
     icon: Zap,
     url: "https://kotac-popusta.lovable.app/",
   },
   {
     id: "autohub",
     name: "Autohub",
-    description: "Aplikacija za automehaničare i radionice – upravljanje servisom, vozila i narudžbe.",
+    description: "Aplikacija za automehaničare i radionice – upravljanje servisima, vozilima i narudžbama.",
     category: "Poslovni alati",
     useCase: "Autoservisi, radionice i mehaničari",
-    techStack: ["Web", "Lovable"],
+    techStack: ["Web"],
     icon: Briefcase,
     logo: "/apps/autohub-logo.png",
     url: "https://auto-hubflow.lovable.app",
@@ -36,7 +36,7 @@ const applications = [
     description: "Aplikacija za virtualno isprobavanje odjeće i shopping iskustvo.",
     category: "Web aplikacije",
     useCase: "Boutique trgovine i modna industrija",
-    techStack: ["Web", "Lovable"],
+    techStack: ["Web"],
     icon: Globe,
     url: "https://tryon-shop-buddy.lovable.app/",
   },
@@ -116,66 +116,76 @@ export default function AplikacijePage() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {applications.map((app, index) => (
-            <motion.div
-              key={app.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <a
-                href={app.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded-2xl"
+          {applications.map((app, index) => {
+            const hasLink = app.url && !app.url.includes("example.com");
+            const card = (
+              <Card className={`flex h-full flex-col border-slate-800 bg-slate-900/70 transition-all duration-300 ${hasLink ? "hover:-translate-y-2 hover:border-cyan-400/70 hover:shadow-[0_0_40px_rgba(34,211,238,0.35)]" : ""}`}>
+                <CardHeader>
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-300 overflow-hidden">
+                      {"logo" in app && app.logo && !logoError[app.id] ? (
+                        <Image
+                          src={app.logo}
+                          alt={app.name}
+                          width={48}
+                          height={48}
+                          className="object-contain"
+                          onError={() => setLogoError((p) => ({ ...p, [app.id]: true }))}
+                        />
+                      ) : (
+                        <app.icon className="h-6 w-6" />
+                      )}
+                    </div>
+                    <Badge variant="secondary">{app.category}</Badge>
+                  </div>
+                  <CardTitle className="text-xl text-slate-50">
+                    {app.name}
+                  </CardTitle>
+                  <CardDescription className="text-slate-300/90">
+                    {app.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-slate-300 mb-2">Primjena:</p>
+                    <p className="text-sm text-slate-400">{app.useCase}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-300 mb-2">Tehnologije:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {app.techStack.map((tech) => (
+                        <Badge key={tech} variant="outline" className="text-xs border-slate-700 text-slate-300">
+                          {tech}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+            return (
+              <motion.div
+                key={app.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card className="flex h-full flex-col border-slate-800 bg-slate-900/70 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/70 hover:shadow-[0_0_40px_rgba(34,211,238,0.35)]">
-                  <CardHeader>
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-300 overflow-hidden">
-                        {"logo" in app && app.logo && !logoError[app.id] ? (
-                          <Image
-                            src={app.logo}
-                            alt={app.name}
-                            width={48}
-                            height={48}
-                            className="object-contain"
-                            onError={() => setLogoError((p) => ({ ...p, [app.id]: true }))}
-                          />
-                        ) : (
-                          <app.icon className="h-6 w-6" />
-                        )}
-                      </div>
-                      <Badge variant="secondary">{app.category}</Badge>
-                    </div>
-                    <CardTitle className="text-xl text-slate-50">
-                      {app.name}
-                    </CardTitle>
-                    <CardDescription className="text-slate-300/90">
-                      {app.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <div className="mb-4">
-                      <p className="text-sm font-medium text-slate-300 mb-2">Primjena:</p>
-                      <p className="text-sm text-slate-400">{app.useCase}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-slate-300 mb-2">Tehnologije:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {app.techStack.map((tech) => (
-                          <Badge key={tech} variant="outline" className="text-xs border-slate-700 text-slate-300">
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </a>
-            </motion.div>
-          ))}
+                {hasLink ? (
+                  <a
+                    href={app.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded-2xl"
+                  >
+                    {card}
+                  </a>
+                ) : (
+                  <div className="block rounded-2xl cursor-default">{card}</div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
 
         <motion.div

@@ -58,26 +58,22 @@ export default function PortfolioPage() {
 
   const appsGalleryItems = [
     {
-      image: "https://picsum.photos/seed/app-video-1/800/600",
-      text: "Video prikaz – Automatizirano zakazivanje termina",
+      video: "/portfolio/videos/kotac-popusta.mp4",
+      text: "Video prikaz – Lucky Spin Wheel (Kotac popusta)",
     },
     {
-      image: "https://picsum.photos/seed/app-video-2/800/600",
-      text: "Video prikaz – WhatsApp i Instagram bot",
+      video: "/portfolio/videos/autohub.mp4",
+      text: "Video prikaz – Autohub",
     },
     {
-      image: "https://picsum.photos/seed/app-video-3/800/600",
-      text: "Video prikaz – Ticketing aplikacija",
-    },
-    {
-      image: "https://picsum.photos/seed/app-video-4/800/600",
-      text: "Video prikaz – Poslovni alati i dashboardi",
+      video: "/portfolio/videos/tryon-boutique.mp4",
+      text: "Video prikaz – Try On Boutique",
     },
   ];
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [lightboxItems, setLightboxItems] = useState(galleryItems);
+  const [lightboxItems, setLightboxItems] = useState<{ image?: string; video?: string; text: string }[]>(galleryItems);
 
   return (
     <div className="min-h-screen bg-slate-950 py-12 md:py-20 text-slate-50">
@@ -147,27 +143,42 @@ export default function PortfolioPage() {
         </div>
       </div>
 
-      {lightboxOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
-          onClick={() => setLightboxOpen(false)}
-        >
+      {lightboxOpen && (() => {
+        const current = lightboxItems[lightboxIndex];
+        const isVideo = current && "video" in current && current.video;
+        return (
           <div
-            className="max-w-4xl max-h-[90vh]"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+            onClick={() => setLightboxOpen(false)}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element -- lightbox dynamic src */}
-            <img
-              src={lightboxItems[lightboxIndex].image}
-              alt={lightboxItems[lightboxIndex].text}
-              className="max-h-[80vh] w-auto rounded-lg shadow-2xl"
-            />
-            <p className="mt-3 text-center text-slate-100 text-sm">
-              {lightboxItems[lightboxIndex].text}
-            </p>
+            <div
+              className="max-w-4xl max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {isVideo ? (
+                <video
+                  src={current.video}
+                  controls
+                  autoPlay
+                  loop
+                  playsInline
+                  className="max-h-[80vh] w-auto rounded-lg shadow-2xl"
+                />
+              ) : (
+                /* eslint-disable-next-line @next/next/no-img-element -- lightbox dynamic src */
+                <img
+                  src={current?.image}
+                  alt={current?.text ?? ""}
+                  className="max-h-[80vh] w-auto rounded-lg shadow-2xl"
+                />
+              )}
+              <p className="mt-3 text-center text-slate-100 text-sm">
+                {current?.text}
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

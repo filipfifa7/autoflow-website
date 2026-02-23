@@ -42,7 +42,7 @@ function KontaktForm() {
     setError(null);
     setSubmitting(true);
 
-    const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID;
+    const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID || "mkovqgky";
 
     try {
       if (formspreeId) {

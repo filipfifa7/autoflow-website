@@ -518,7 +518,7 @@ class App {
     if (!this.isDown) return;
     const x = "touches" in e ? e.touches[0].clientX : e.clientX;
     const distance = (this.start - x) * (this.scrollSpeed * 0.025);
-    this.scroll.target = (this.scroll.position || 0) + distance;
+    if (distance > 0) this.scroll.target = (this.scroll.position || 0) + distance;
   }
 
   onTouchUp() {
@@ -528,7 +528,7 @@ class App {
 
   onWheel(e: WheelEvent) {
     const delta = e.deltaY || (e as any).wheelDelta || (e as any).detail || 0;
-    this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.2;
+    if (delta > 0) this.scroll.target += this.scrollSpeed * 0.2;
     this.onCheckDebounce();
   }
 

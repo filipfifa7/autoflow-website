@@ -46,15 +46,15 @@ export function Navbar() {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex h-16 items-center justify-between w-full">
-        <Link href="/" className="flex items-center pl-2 md:pl-4">
-          <div className="relative h-16 w-64 md:h-20 md:w-80">
+        <Link href="/" className="flex items-center flex-shrink-0 pl-2 md:pl-4">
+          <div className="relative h-12 w-40 md:h-14 md:w-48">
             <Image
               src="/logo-autoflow.png"
               alt="Autoflow logo"
               fill
               priority
-              sizes="(max-width: 768px) 256px, 320px"
-              className="object-contain"
+              sizes="(max-width: 768px) 160px, 192px"
+              className="object-contain object-left"
             />
           </div>
         </Link>

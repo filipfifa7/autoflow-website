@@ -8,14 +8,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
           {/* Company Info */}
           <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="relative h-14 w-56 md:h-16 md:w-72">
+            <div className="flex items-start mb-4">
+              <div className="relative h-12 w-40 md:h-14 md:w-48 flex-shrink-0">
                 <Image
                   src="/logo-autoflow.png"
                   alt="Autoflow logo"
                   fill
-                  sizes="(max-width: 768px) 224px, 288px"
-                  className="object-contain"
+                  sizes="(max-width: 768px) 160px, 192px"
+                  className="object-contain object-left"
                 />
               </div>
             </div>

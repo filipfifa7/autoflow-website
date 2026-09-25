@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { Service } from "@/lib/data";
+import { Service, HOURLY_NOTE, anchorLabel, isHourly } from "@/lib/data";
 import { useState } from "react";
 import { ServiceModal } from "./service-modal";
 
@@ -55,6 +55,12 @@ export function ServiceCard({ service, index = 0 }: ServiceCardProps) {
               <div className="text-2xl font-bold text-cyan-300">
                 {service.price}
               </div>
+              <p className="mt-1 text-sm text-slate-300">
+                {anchorLabel(service)}
+              </p>
+              {isHourly(service) && (
+                <p className="mt-1 text-xs text-slate-400">{HOURLY_NOTE}</p>
+              )}
               {service.note && (
                 <p className="mt-1 text-xs text-slate-400">{service.note}</p>
               )}

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { Service } from "@/lib/data";
+import { Service, HOURLY_NOTE, anchorLabel, isHourly } from "@/lib/data";
 import Link from "next/link";
 
 interface ServiceModalProps {
@@ -46,6 +46,12 @@ export function ServiceModal({ service, open, onOpenChange }: ServiceModalProps)
             <div>
               <p className="text-sm text-slate-300">Cijena:</p>
               <p className="text-3xl font-bold text-cyan-300">{service.price}</p>
+              <p className="mt-1 text-sm text-slate-300">
+                {anchorLabel(service)}
+              </p>
+              {isHourly(service) && (
+                <p className="mt-1 text-xs text-slate-400">{HOURLY_NOTE}</p>
+              )}
             </div>
             {service.note && (
               <p className="text-sm text-slate-400 max-w-xs">{service.note}</p>

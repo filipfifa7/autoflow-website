@@ -8,6 +8,17 @@ export interface Service {
   includes?: string[];
 }
 
+// Sidrena cijena (NN 101/2026): cijena na 10.9.2026. Usluge "Po dogovoru" prikazuju cijenu radnog sata.
+export const ANCHOR_DATE = "10.9.2026.";
+export const HOURLY_NOTE = "Konačna cijena formira se prema broju utrošenih radnih sati.";
+
+export const isHourly = (s: Service) => s.price === "Po dogovoru";
+
+export const anchorLabel = (s: Service) =>
+  isHourly(s)
+    ? `Cijena na ${ANCHOR_DATE} za 1 radni sat: 15€`
+    : `Cijena na ${ANCHOR_DATE}: ${s.price}`;
+
 export const services: Service[] = [
   {
     id: "optimizacija-sustava",
@@ -79,7 +90,6 @@ export const services: Service[] = [
     name: "Dijagnostika problema računala/laptopa",
     description: "Pronalazak problema rada računala/laptopa te otklon problema kako bi računalo moglo normalno nastaviti raditi",
     price: "15€",
-    note: "Ukoliko se nastavi sa uslugom popravka onda je besplatno",
     category: "servis",
     includes: [
       "Dijagnostika problema",
@@ -130,7 +140,6 @@ export const services: Service[] = [
     name: "Slaganje/Nadogradnja računala",
     description: "Sklapanje računala po želji ili nadogradnja sa preporučenim komponentama ili komponentama po želji",
     price: "50€",
-    note: "Svi djelovi idu preko obrta te se ne naplaćuju po nižoj partnerskoj cijeni i nisu u cijeni usluge",
     category: "servis",
     includes: [
       "Sklapanje računala po želji",
@@ -143,7 +152,6 @@ export const services: Service[] = [
     name: "IT konzultacije za obrte i tvrtke",
     description: "1 sat konzultacija vezanih za hardware računala, nadogradnju sustava i ostalo",
     price: "15€",
-    note: "Ukoliko se nastavi sa nekom drugom uslugom onda je besplatno",
     category: "poslovno",
     includes: [
       "1 sat konzultacija",
@@ -157,7 +165,6 @@ export const services: Service[] = [
     name: "Konzultacije/Savjetovanje oko aplikativnih i digitalnih rješenja",
     description: "1 sat konzultacija vezanih za moguću izradu digitalizacije, automatizacije, aplikacije, web stranice ili ostalog",
     price: "25€",
-    note: "Ukoliko se nastavi sa izradom onda je besplatno",
     category: "poslovno",
     includes: [
       "1 sat konzultacija",
@@ -170,7 +177,7 @@ export const services: Service[] = [
     id: "najam-aplikacija",
     name: "Najam gotovih aplikacija",
     description: "Mjesečni najam gotovih automatiziranih aplikacija (automatizirano zakazivanje termina, slanje Whatsapp i Instagram odgovora, pretvaranje slika u 3d modele, Ticketing aplikacija) + tehnička podrška 24/7",
-    price: "35-50€",
+    price: "Po dogovoru",
     category: "softver",
     includes: [
       "Mjesečni najam aplikacija",
@@ -251,7 +258,6 @@ export const services: Service[] = [
     name: "Edukacije za mlade (16+ god.) - programiranje",
     description: "2 školska sata edukacije programiranja u jednoj od sljedećih tehnologija (C++, C#, Python, C#.NET CORE)",
     price: "15€",
-    note: "Pogodno uzeti više sati pa je cijena manja",
     category: "edukacija",
     includes: [
       "2 školska sata",
@@ -276,7 +282,6 @@ export const services: Service[] = [
     description:
       "Rad u Canvi, Figmi i Illustratoru (podsjetnice, pozivnice i ostale usluge po potrebi).",
     price: "Po dogovoru",
-    note: "Cijena ovisi o veličini i kompleksnosti zahtjeva.",
     category: "softver",
     includes: [
       "Dizajn podsjetnica i pozivnica",

@@ -65,6 +65,10 @@ export function Footer() {
         <div className="mt-6 pt-6 border-t border-slate-800 text-center text-sm text-slate-500">
           <p>
             &copy; {new Date().getFullYear()} Autoflow. Sva prava pridržana.
+            {" · "}
+            <a href="/cjenici" className="hover:text-cyan-400 underline">
+              Cjenik
+            </a>
           </p>
         </div>
       </div>
